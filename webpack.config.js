@@ -1,21 +1,16 @@
-const webpack = require("webpack");
-
 module.exports = {
-    entry: './index.js',
-    context: __dirname,
-    plugins: [
-        new webpack.NamedModulesPlugin()
-    ],
-    loader: {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        loader: 'babel-laoder',
-        query: {
-            presets: ['es2015']
-        }
+    entry: './main',
+    output: { filename: "app.js" },
+    module: {
+        loaders: [
+            {
+                test: /.ts$/,
+                loader: "ts-loader",
+                exclude: 'node_modules'
+            }
+        ]
     },
-    devServer: {
-        contentBase: ["app"],
-        port: 9000
+    resolve: {
+        extensions: ["", ".ts", ".js"]
     }
 }

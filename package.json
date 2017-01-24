@@ -6,17 +6,17 @@
   "author": "Jonathan Kupcho",
   "license": "MIT",
   "scripts": {
-    "build": "webpack",
-    "start": "webpack-dev-server --open --hot"
-  },
-  "devDependencies": {
-    "babel-core": "^6.22.1",
-    "babel-loader": "^6.2.10",
-    "babel-preset-es2015": "^6.22.0",
-    "webpack": "^2.2.0",
-    "webpack-dev-server": "^2.2.0"
+    "start": "webpack-dev-server --watch --inline",
+    "postinstall": "typings install"
   },
   "dependencies": {
-    "rx": "^4.1.0"
+    "rxjs": "^5.0.0"
+  },
+  "devDependencies": {
+    "ts-loader": "^1.2.2",
+    "typescript": "^2.0.10",
+    "typings": "^2.0.0",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
   }
 }

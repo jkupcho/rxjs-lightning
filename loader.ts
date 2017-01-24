@@ -1,3 +1,5 @@
+// Credit goes to Pluralsight on this, not that I crammed a Pluralsight lesson in on RxJS the night
+// before the talk or anything. **cough**
 import { Observable } from "rxjs";
 
 export function load(url: string) {
@@ -25,31 +27,14 @@ export function load(url: string) {
         xhr.removeEventListener("load", onLoad);
         xhr.abort();
     }
-  }).retryWhen(retryStrategy({ attempts: 3, delay: 1500 }));
+  });
 }
 
 export function loadWithFetch(url: string) {
-  // This will lazy load the URL, so it will not send the request until there'so
-  // a subscriber.
-  return Observable.defer(() => {
-    return Observable.fromPromise(fetch(url).then(r =>{
-        if (r.status === 200) {
-            return r.json();
-        } else {
-            return Promise.reject(r);
-        }
-    }))
-  }).retryWhen(retryStrategy());;
-}
-
-function retryStrategy({ attempts = 4, delay = 1000 } = {}) {
-  return function (errors) {
-    return errors
-      .scan((acc, value) => {
-        console.log(acc, value);
-        return acc + 1;
-      }, 0)
-      .takeWhile(acc => acc < attempts)
-      .delay(delay);
-  }
+    return Observable.fromPromise(fetch(url).then((res) => {
+      if (res.status === 200) {
+        return res.json();
+      }
+      return [];
+    }));
 }

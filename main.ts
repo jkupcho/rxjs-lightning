@@ -1,39 +1,13 @@
 import { Observable } from "rxjs";
 import { loadWithFetch, load } from './loader';
 
-// let source = Observable.merge(
-//   Observable.of(1),
-//   Observable.from([2,3,4]),
-//   Observable.throw(new Error("Stop!")),
-//   Observable.of(5)
-// // Allows for returning an Observable if an error occurs.
-// ).catch(e => {
-//   console.log(`caught: ${e}`);
-//   return Observable.of(10);
-// });
-
-// source.subscribe(
-//   value => console.log(`value ${value}`),
-//   error => console.error(`error: ${error}`),
-//   () => console.log("complete")
-// );
-
 let output = document.getElementById("output");
 let button = document.getElementById("button");
 
 let click = Observable.fromEvent(button, "click");
 
-
-let subscription = load("moviess.json")
-  .subscribe(renderMovies,
-    e => console.log(`error: ${e}`),
-    () => console.log("complete!")
-);
-
-subscription.unsubscribe();
-
-function renderMovies(movies) {
-  movies.forEach(m => {
+function renderCats(cats) {
+  cats.forEach(m => {
     let div = document.createElement("div");
     div.innerText = m.title;
 
@@ -41,9 +15,39 @@ function renderMovies(movies) {
   })
 }
 
-click.flatMap(e => loadWithFetch("movies.json"))
-  .subscribe(
-  renderMovies,
-  e => console.error(`error: ${e}`),
-  () => console.log("complete")
+let catObservable = click.flatMap(e => loadWithFetch("cats.json"))
+  .flatMap(cats => Observable.from(cats))
+  .map((cat:any) => {
+    if (cat.type === 'Calico') {
+      cat.special = true;
+    }
+    return cat;
+  })
+  .scan((acc, value, index) => {
+    let catEl = document.createElement("div");
+    
+    let catImg = document.createElement("img");
+    // lorempixel cats seem to work best starting at 7
+    const catIndex = index + 7;
+    catImg.src = `http://lorempixel.com/g/200/200/cats/${catIndex}`;
+    
+    let catNameEl = document.createElement("h3");
+    catNameEl.innerText = value.name;
+
+    if (value.special) {
+      catEl.className = "special";
+    }
+    
+    catEl.appendChild(catImg);
+    catEl.appendChild(catNameEl);
+
+    acc.appendChild(catEl);
+
+    return acc;
+  }, document.createElement("div"));
+
+catObservable.subscribe(
+    catDiv => output.appendChild(catDiv),
+    e => console.error(`error: ${e}`),
+    () => console.log("complete")
 );

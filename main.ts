@@ -2,7 +2,9 @@ import { Observable } from "rxjs";
 
 let output = document.getElementById("content");
 
-let arrayObservable = Observable.from([1, 2, 3, 'boo']);
+let arrayObservable = Observable.from([1, 2, 3, 'boo'])
+  .filter(value => !isNaN(+value))
+  .map(value => `Number: ${value}`);
 
 arrayObservable.subscribe(
   value => {

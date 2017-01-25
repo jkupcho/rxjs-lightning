@@ -16,10 +16,11 @@ function renderCats(cats) {
 }
 
 let catObservable = click.flatMap(e => loadWithFetch("cats.json"))
-  .flatMap(cats => Observable.from(cats))
+  .flatMap((cats:any) => Observable.from(cats))
   .map((cat:any) => {
     if (cat.type === 'Calico') {
-      cat.special = true;
+      // Keep it pure, yo
+      return Object.assign({}, cat, { special: true} );
     }
     return cat;
   })
